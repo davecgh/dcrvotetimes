@@ -1,17 +1,22 @@
+// Copyright (c) 2018-2022 Dave Collins
+// Use of this source code is governed by an ISC
+// license that can be found in the LICENSE file.
+
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"time"
 
-	"github.com/decred/dcrd/blockchain/stake"
-	"github.com/decred/dcrd/chaincfg"
+	"github.com/decred/dcrd/blockchain/stake/v4"
 	"github.com/decred/dcrd/chaincfg/chainhash"
-	"github.com/decred/dcrd/dcrutil"
-	"github.com/decred/dcrd/rpcclient"
+	"github.com/decred/dcrd/chaincfg/v3"
+	"github.com/decred/dcrd/dcrutil/v4"
+	"github.com/decred/dcrd/rpcclient/v7"
 )
 
 // ticketData houses information about a purchased ticket.
@@ -60,10 +65,11 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	params := &chaincfg.MainNetParams
+	params := chaincfg.MainNetParams()
 
 	// Find the best block height so the data is calculated for all blocks.
-	_, blockHeight, err := client.GetBestBlock()
+	ctx := context.Background()
+	_, blockHeight, err := client.GetBestBlock(ctx)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -85,12 +91,12 @@ func main() {
 		}
 
 		// Load the block for the height and store its timestamp for later use.
-		hash, err := client.GetBlockHash(i)
+		hash, err := client.GetBlockHash(ctx, i)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		blk, err := client.GetBlock(hash)
+		blk, err := client.GetBlock(ctx, hash)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -98,7 +104,7 @@ func main() {
 		blockTimes[i] = blk.Header.Timestamp
 
 		for _, stx := range blk.STransactions {
-			switch stake.DetermineTxType(stx) {
+			switch stake.DetermineTxType(stx, true, true) {
 
 			// Track ticket purchases.
 			case stake.TxTypeSStx:

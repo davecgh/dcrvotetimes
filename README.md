@@ -20,60 +20,34 @@ if desired.
 
 Building or updating from source requires the following build dependencies:
 
-- **Go 1.9 or 1.10**
+- **Go 1.17 or 1.18**
 
-  Installation instructions can be found here: http://golang.org/doc/install.
-  It is recommended to add `$GOPATH/bin` to your `PATH` at this point.
+  Installation instructions can be found here: https://go.dev/doc/install.
+  Ensure Go was installed properly and is a supported version:
+  ```sh
+  $ go version
+  $ go env GOROOT GOPATH
+  ```
+  NOTE: `GOROOT` and `GOPATH` must not be on the same path. Since Go 1.8 (2016),
+  `GOROOT` and `GOPATH` are set automatically, and you do not need to change
+  them. However, you still need to add `$GOPATH/bin` to your `PATH` in order to
+  run binaries installed by `go get` and `go install` (On Windows, this happens
+  automatically).
 
-- **Dep**
+  Unix example -- add these lines to .profile:
 
-  Dep is used to manage project dependencies and provide reproducible builds.
-  To install:
+  ```
+  PATH="$PATH:/usr/local/go/bin"  # main Go binaries ($GOROOT/bin)
+  PATH="$PATH:$HOME/go/bin"       # installed Go projects ($GOPATH/bin)
+  ```
 
-  `go get -u github.com/golang/dep/cmd/dep`
+**Building/Installing/Updating**:
 
-Unfortunately, the use of `dep` prevents a handy tool such as `go get` from
-automatically downloading, building, and installing the source in a single
-command.  Instead, the latest project and dependency sources must be first
-obtained manually with `git` and `dep`, and then `go` is used to build and
-install the project.
-
-**Getting the source**:
-
-For a first time installation, the project and dependency sources can be
-obtained manually with `git` and `glide` (create directories as needed):
-
-```
-git clone https://github.com/davecgh/dcrvotetimes $GOPATH/src/github.com/davecgh/dcrvotetimes
-cd $GOPATH/src/github.com/davecgh/dcrvotetimes
-dep ensure
-```
-
-To update an existing source tree, pull the latest changes and install the
-matching dependencies:
+Run the follow command to build the latest release version of the `dcrvotetimes`
+executable from source and install it to `$GOPATH/bin/`:
 
 ```
-cd $GOPATH/src/github.com/davecgh/dcrvotetimes
-git pull
-dep ensure
-```
-
-**Building/Installing**:
-
-The `go` tool is used to build or install (to `GOPATH`) the project.  Some
-example build instructions are provided below (all must run from the
-`dcrvotetimes` project directory).
-
-To build a `dcrvotetimes` executable and install it to `$GOPATH/bin/`:
-
-```
-go install
-```
-
-To build a `dcrvotetimes` executable and place it in the current directory:
-
-```
-go build
+go install github.com/davecgh/dcrvotetimes@latest
 ```
 
 ## Issue Tracker
