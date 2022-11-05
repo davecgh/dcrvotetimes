@@ -9,7 +9,10 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
+	"runtime"
+	"strings"
 	"time"
 
 	"github.com/decred/dcrd/blockchain/stake/v4"
@@ -45,7 +48,17 @@ func main() {
 	var rpcCert = flag.String("rpccert", filepath.Join(dcrdHomeDir, "rpc.cert"),
 		"RPC server TLS certificate")
 	var verbose = flag.Bool("verbose", false, "Print details about every vote")
+	var version = flag.Bool("version", false, "Display version information and exit")
 	flag.Parse()
+
+	// Show the version and exit if the version flag was specified.
+	if *version {
+		appName := filepath.Base(os.Args[0])
+		appName = strings.TrimSuffix(appName, filepath.Ext(appName))
+		fmt.Printf("%s version %s (Go version %s %s/%s)\n", appName,
+			Version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
+		os.Exit(0)
+	}
 
 	// Connect to dcrd RPC server using websockets.
 	certs, err := ioutil.ReadFile(*rpcCert)

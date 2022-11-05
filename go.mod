@@ -1,6 +1,6 @@
 module github.com/davecgh/dcrvotetimes
 
-go 1.17
+go 1.18
 
 require (
 	github.com/decred/dcrd/blockchain/stake/v4 v4.0.0
