@@ -40,7 +40,7 @@ var (
 	// the app will panic at runtime.  Of particular note is the pre-release
 	// and build metadata portions MUST only contain characters from
 	// semanticAlphabet.
-	Version = "1.0.1-pre"
+	Version = "1.0.1"
 )
 
 // parseUint32 converts the passed string to an unsigned integer or returns an
